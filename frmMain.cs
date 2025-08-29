@@ -89,9 +89,6 @@ namespace FHIR_Bundle_Visualizer
         {
             comboBox1.Items.Add("ALL");
             comboBox1.SelectedIndex = 0;
-
-            treeView1.DrawMode = TreeViewDrawMode.OwnerDrawText;
-            treeView1.DrawNode += TreeView1_DrawNode;
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -139,19 +136,6 @@ namespace FHIR_Bundle_Visualizer
                         treeView1.Nodes.Add(item);
                     }
                 }
-            }
-        }
-
-        private void TreeView1_DrawNode(object sender, DrawTreeNodeEventArgs e)
-        {
-            e.Graphics.DrawString(e.Node.Text, treeView1.Font, Brushes.Black, e.Bounds);
-
-            // Optionally draw custom symbols here
-            if (e.Node.Nodes.Count > 0)
-            {
-                Rectangle glyphRect = new Rectangle(e.Bounds.Left - 15, e.Bounds.Top + 4, 10, 10);
-                string symbol = e.Node.IsExpanded ? "−" : "+";
-                e.Graphics.DrawString(symbol, treeView1.Font, Brushes.Black, glyphRect);
             }
         }
 
