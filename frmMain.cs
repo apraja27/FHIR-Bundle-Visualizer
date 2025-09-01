@@ -113,8 +113,15 @@ namespace FHIR_Bundle_Visualizer
             }
             if (txtFilePath.Text.Length > 0)
             {
-                var jsonString = File.ReadAllText(txtFilePath.Text);
-                SetJSONDetails(jsonString);
+                try
+                {
+                    var jsonString = File.ReadAllText(txtFilePath.Text);
+                    SetJSONDetails(jsonString);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Unable to read the File.");
+                }
             }
         }
 
