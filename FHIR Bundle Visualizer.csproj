@@ -77,10 +77,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FHIR Models\Entry.cs" />
-    <Compile Include="FHIR Models\FHIRBundle.cs" />
-    <Compile Include="FHIR Models\Request.cs" />
-    <Compile Include="FHIR Models\Resource.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -31,11 +31,18 @@ namespace FHIR_Bundle_Visualizer
 
         public void SetJSONDetails(string jsonString)
         {
+            ResourceCount = 0;
+            ResourceList = new Dictionary<string, TreeNode>();
+            ResourceTypeList = new Dictionary<string, int>();
+            treeView1.Nodes.Clear();
+
+            comboBox1.Items.Clear();
+            comboBox1.Items.Add("ALL");
+            comboBox1.SelectedIndex = 0;
+
             try
             {
                 JsonDocument doc = JsonDocument.Parse(jsonString);
-                ResourceList = new Dictionary<string, TreeNode>();
-                ResourceTypeList = new Dictionary<string, int>();
                 JsonElement entryNode = doc.RootElement.GetProperty("entry");
                 foreach (JsonElement item in entryNode.EnumerateArray())
                 {
@@ -47,32 +54,38 @@ namespace FHIR_Bundle_Visualizer
                     {
                         ResourceTypeList[resourceType] += 1;
                         TreeNode childNode = new TreeNode() { Name = id, Text = id, Tag = resource };
-                        treeView1.Nodes[resourceType].Nodes.Add(childNode);
-                        treeView1.Refresh();
+                        //treeView1.Nodes[resourceType].Nodes.Add(childNode);
+                        //treeView1.Refresh();
+                        ResourceList[resourceType].Nodes.Add(childNode);
                     }
                     else
                     {
                         ResourceTypeList.Add(resourceType, 1);
                         TreeNode node = new TreeNode() { Name = resourceType, Text = resourceType, Tag = "P" };
-                        treeView1.Nodes.Add(node);
+                        //treeView1.Nodes.Add(node);
                         TreeNode childNode = new TreeNode() { Name = id, Text = id, Tag = resource };
-                        treeView1.Nodes[resourceType].Nodes.Add(childNode);
-                        treeView1.Refresh();
-                        comboBox1.Items.Add(resourceType);
+                        node.Nodes.Add(childNode);
+                        //treeView1.Nodes[resourceType].Nodes.Add(childNode);
+                        //treeView1.Refresh();
+                        //comboBox1.Items.Add(resourceType);
+                        ResourceList.Add(resourceType, node);
                     }
 
                     ResourceCount += 1;
                     labelResourceCount.Text = ResourceCount.ToString();
                     labelResourceCount.Refresh();
                 }
-
-                foreach (var item in ResourceTypeList)
+                var Temp = ResourceTypeList.OrderBy(r => r.Key);
+                //foreach (var item in ResourceTypeList)
+                foreach (var item in Temp)
                 {
-                    treeView1.Nodes[item.Key.ToString()].Text = $"{ item.Key.ToString() } ({item.Value.ToString()})";
-                    ResourceList.Add(item.Key.ToString(), treeView1.Nodes[item.Key.ToString()]);
+                    //treeView1.Nodes[item.Key.ToString()].Text = $"{ item.Key.ToString() } ({item.Value.ToString()})";
+                    comboBox1.Items.Add(item.Key);
+                    ResourceList[item.Key].Text = $"{ item.Key.ToString() } ({item.Value.ToString()})";
+                    treeView1.Nodes.Add(ResourceList[item.Key]);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 MessageBox.Show("Unable to read the Json file.");
             }
@@ -88,7 +101,12 @@ namespace FHIR_Bundle_Visualizer
                 {
                     groupBox3.Text = SelectedKey;
                     richTextBox1.Text = ResourceString;
+                    buttonCopytoClipboard.Show();
                 }
+            }
+            else
+            {
+                buttonCopytoClipboard.Hide();
             }
         }
 
@@ -96,6 +114,8 @@ namespace FHIR_Bundle_Visualizer
         {
             comboBox1.Items.Add("ALL");
             comboBox1.SelectedIndex = 0;
+            labelCopied.Hide();
+            buttonCopytoClipboard.Hide();
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -146,5 +166,35 @@ namespace FHIR_Bundle_Visualizer
             }
         }
 
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked == true)
+            {
+                treeView1.ExpandAll();
+            }
+            else
+            {
+                treeView1.CollapseAll();
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(richTextBox1.Text);
+            labelCopied.Show();
+            timer1.Enabled = true;
+        }
+
+        int counter = 0;
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            counter++;
+            if (counter >= 10)
+            {
+                labelCopied.Visible = false;
+                timer1.Stop();
+                counter = 0;
+            }
+        }
     }
 }
