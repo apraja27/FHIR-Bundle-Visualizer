@@ -34,8 +34,8 @@ namespace FHIR_Bundle_Visualizer
             ResourceCount = 0;
             ResourceList = new Dictionary<string, TreeNode>();
             ResourceTypeList = new Dictionary<string, int>();
+            
             treeView1.Nodes.Clear();
-
             comboBox1.Items.Clear();
             comboBox1.Items.Add("ALL");
             comboBox1.SelectedIndex = 0;
@@ -54,20 +54,16 @@ namespace FHIR_Bundle_Visualizer
                     {
                         ResourceTypeList[resourceType] += 1;
                         TreeNode childNode = new TreeNode() { Name = id, Text = id, Tag = resource };
-                        //treeView1.Nodes[resourceType].Nodes.Add(childNode);
-                        //treeView1.Refresh();
                         ResourceList[resourceType].Nodes.Add(childNode);
                     }
                     else
                     {
                         ResourceTypeList.Add(resourceType, 1);
                         TreeNode node = new TreeNode() { Name = resourceType, Text = resourceType, Tag = "P" };
-                        //treeView1.Nodes.Add(node);
+                        
                         TreeNode childNode = new TreeNode() { Name = id, Text = id, Tag = resource };
                         node.Nodes.Add(childNode);
-                        //treeView1.Nodes[resourceType].Nodes.Add(childNode);
-                        //treeView1.Refresh();
-                        //comboBox1.Items.Add(resourceType);
+                        
                         ResourceList.Add(resourceType, node);
                     }
 
@@ -76,10 +72,8 @@ namespace FHIR_Bundle_Visualizer
                     labelResourceCount.Refresh();
                 }
                 var Temp = ResourceTypeList.OrderBy(r => r.Key);
-                //foreach (var item in ResourceTypeList)
                 foreach (var item in Temp)
                 {
-                    //treeView1.Nodes[item.Key.ToString()].Text = $"{ item.Key.ToString() } ({item.Value.ToString()})";
                     comboBox1.Items.Add(item.Key);
                     ResourceList[item.Key].Text = $"{ item.Key.ToString() } ({item.Value.ToString()})";
                     treeView1.Nodes.Add(ResourceList[item.Key]);
