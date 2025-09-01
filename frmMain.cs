@@ -31,43 +31,50 @@ namespace FHIR_Bundle_Visualizer
 
         public void SetJSONDetails(string jsonString)
         {
-            ResourceList = new Dictionary<string, TreeNode>();
-            ResourceTypeList = new Dictionary<string, int>();
             JsonDocument doc = JsonDocument.Parse(jsonString);
-            JsonElement entryNode = doc.RootElement.GetProperty("entry");
-            foreach (JsonElement item in entryNode.EnumerateArray())
+            try
             {
-                JsonElement resource = item.GetProperty("resource");
-                string id = resource.GetProperty("id").GetString();
-                string resourceType = resource.GetProperty("resourceType").GetString();
-
-                if (ResourceTypeList.ContainsKey(resourceType))
+                ResourceList = new Dictionary<string, TreeNode>();
+                ResourceTypeList = new Dictionary<string, int>();
+                JsonElement entryNode = doc.RootElement.GetProperty("entry");
+                foreach (JsonElement item in entryNode.EnumerateArray())
                 {
-                    ResourceTypeList[resourceType] += 1;
-                    TreeNode childNode = new TreeNode() { Name = id, Text = id, Tag = resource };
-                    treeView1.Nodes[resourceType].Nodes.Add(childNode);
-                    treeView1.Refresh();
-                }
-                else
-                {
-                    ResourceTypeList.Add(resourceType, 1);
-                    TreeNode node = new TreeNode() { Name = resourceType, Text = resourceType, Tag = "P" };
-                    treeView1.Nodes.Add(node);
-                    TreeNode childNode = new TreeNode() { Name = id, Text = id, Tag = resource };
-                    treeView1.Nodes[resourceType].Nodes.Add(childNode);
-                    treeView1.Refresh();
-                    comboBox1.Items.Add(resourceType);
+                    JsonElement resource = item.GetProperty("resource");
+                    string id = resource.GetProperty("id").GetString();
+                    string resourceType = resource.GetProperty("resourceType").GetString();
+
+                    if (ResourceTypeList.ContainsKey(resourceType))
+                    {
+                        ResourceTypeList[resourceType] += 1;
+                        TreeNode childNode = new TreeNode() { Name = id, Text = id, Tag = resource };
+                        treeView1.Nodes[resourceType].Nodes.Add(childNode);
+                        treeView1.Refresh();
+                    }
+                    else
+                    {
+                        ResourceTypeList.Add(resourceType, 1);
+                        TreeNode node = new TreeNode() { Name = resourceType, Text = resourceType, Tag = "P" };
+                        treeView1.Nodes.Add(node);
+                        TreeNode childNode = new TreeNode() { Name = id, Text = id, Tag = resource };
+                        treeView1.Nodes[resourceType].Nodes.Add(childNode);
+                        treeView1.Refresh();
+                        comboBox1.Items.Add(resourceType);
+                    }
+
+                    ResourceCount += 1;
+                    labelResourceCount.Text = ResourceCount.ToString();
+                    labelResourceCount.Refresh();
                 }
 
-                ResourceCount += 1;
-                labelResourceCount.Text = ResourceCount.ToString();
-                labelResourceCount.Refresh();
+                foreach (var item in ResourceTypeList)
+                {
+                    treeView1.Nodes[item.Key.ToString()].Text = $"{ item.Key.ToString() } ({item.Value.ToString()})";
+                    ResourceList.Add(item.Key.ToString(), treeView1.Nodes[item.Key.ToString()]);
+                }
             }
-
-            foreach (var item in ResourceTypeList)
+            catch (Exception)
             {
-                treeView1.Nodes[item.Key.ToString()].Text = $"{ item.Key.ToString() } ({item.Value.ToString()})";
-                ResourceList.Add(item.Key.ToString(), treeView1.Nodes[item.Key.ToString()]);
+                MessageBox.Show("Unable to read the Json file.");
             }
         }
 
