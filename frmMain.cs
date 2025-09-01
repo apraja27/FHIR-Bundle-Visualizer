@@ -31,9 +31,9 @@ namespace FHIR_Bundle_Visualizer
 
         public void SetJSONDetails(string jsonString)
         {
-            JsonDocument doc = JsonDocument.Parse(jsonString);
             try
             {
+                JsonDocument doc = JsonDocument.Parse(jsonString);
                 ResourceList = new Dictionary<string, TreeNode>();
                 ResourceTypeList = new Dictionary<string, int>();
                 JsonElement entryNode = doc.RootElement.GetProperty("entry");
