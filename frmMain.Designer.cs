@@ -31,20 +31,20 @@ namespace FHIR_Bundle_Visualizer
         {
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.btnBrowse = new System.Windows.Forms.Button();
             this.txtFilePath = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.labelCopied = new System.Windows.Forms.Label();
+            this.btnCopytoClipboard = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.labelResourceCount = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.buttonCopytoClipboard = new System.Windows.Forms.Button();
-            this.labelCopied = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -65,6 +65,19 @@ namespace FHIR_Bundle_Visualizer
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Input";
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox1.Location = new System.Drawing.Point(3, 57);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(77, 23);
+            this.checkBox1.TabIndex = 2;
+            this.checkBox1.Text = "Expand All";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // btnBrowse
             // 
@@ -119,8 +132,6 @@ namespace FHIR_Bundle_Visualizer
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.labelCopied);
-            this.groupBox3.Controls.Add(this.buttonCopytoClipboard);
             this.groupBox3.Controls.Add(this.richTextBox1);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(280, 16);
@@ -129,6 +140,27 @@ namespace FHIR_Bundle_Visualizer
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Details";
+            // 
+            // labelCopied
+            // 
+            this.labelCopied.AutoSize = true;
+            this.labelCopied.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelCopied.ForeColor = System.Drawing.Color.Green;
+            this.labelCopied.Location = new System.Drawing.Point(397, 5);
+            this.labelCopied.Name = "labelCopied";
+            this.labelCopied.Size = new System.Drawing.Size(50, 13);
+            this.labelCopied.TabIndex = 3;
+            this.labelCopied.Text = "Copied!";
+            // 
+            // btnCopytoClipboard
+            // 
+            this.btnCopytoClipboard.Location = new System.Drawing.Point(277, 0);
+            this.btnCopytoClipboard.Name = "btnCopytoClipboard";
+            this.btnCopytoClipboard.Size = new System.Drawing.Size(114, 23);
+            this.btnCopytoClipboard.TabIndex = 1;
+            this.btnCopytoClipboard.Text = "Copy to Clipboard";
+            this.btnCopytoClipboard.UseVisualStyleBackColor = true;
+            this.btnCopytoClipboard.Click += new System.EventHandler(this.btnCopytoClipboard_Click);
             // 
             // richTextBox1
             // 
@@ -151,7 +183,9 @@ namespace FHIR_Bundle_Visualizer
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.labelCopied);
             this.panel1.Controls.Add(this.labelResourceCount);
+            this.panel1.Controls.Add(this.btnCopytoClipboard);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(3, 337);
@@ -178,42 +212,9 @@ namespace FHIR_Bundle_Visualizer
             this.label2.TabIndex = 0;
             this.label2.Text = "Total Resources :";
             // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox1.Location = new System.Drawing.Point(3, 57);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(148, 17);
-            this.checkBox1.TabIndex = 2;
-            this.checkBox1.Text = "Expand / Collapse All";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
-            // buttonCopytoClipboard
-            // 
-            this.buttonCopytoClipboard.Location = new System.Drawing.Point(296, -2);
-            this.buttonCopytoClipboard.Name = "buttonCopytoClipboard";
-            this.buttonCopytoClipboard.Size = new System.Drawing.Size(114, 23);
-            this.buttonCopytoClipboard.TabIndex = 1;
-            this.buttonCopytoClipboard.Text = "Copy to Clipboard";
-            this.buttonCopytoClipboard.UseVisualStyleBackColor = true;
-            this.buttonCopytoClipboard.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // labelCopied
-            // 
-            this.labelCopied.AutoSize = true;
-            this.labelCopied.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelCopied.ForeColor = System.Drawing.Color.Green;
-            this.labelCopied.Location = new System.Drawing.Point(415, 1);
-            this.labelCopied.Name = "labelCopied";
-            this.labelCopied.Size = new System.Drawing.Size(50, 13);
-            this.labelCopied.TabIndex = 3;
-            this.labelCopied.Text = "Copied!";
-            // 
             // timer1
             // 
-            this.timer1.Interval = 1000;
+            this.timer1.Interval = 2000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // frmMain
@@ -230,7 +231,6 @@ namespace FHIR_Bundle_Visualizer
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
@@ -252,7 +252,7 @@ namespace FHIR_Bundle_Visualizer
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.Button buttonCopytoClipboard;
+        private System.Windows.Forms.Button btnCopytoClipboard;
         private System.Windows.Forms.Label labelCopied;
         private System.Windows.Forms.Timer timer1;
     }
