@@ -1,4 +1,7 @@
-﻿using System;
+﻿//https://www.nuget.org/packages/Hl7.Fhir.STU3/6.0.0-rc1
+using Hl7.Fhir.Model;
+using Hl7.Fhir.Serialization;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -34,43 +37,46 @@ namespace FHIR_Bundle_Visualizer
             ResourceCount = 0;
             ResourceList = new Dictionary<string, TreeNode>();
             ResourceTypeList = new Dictionary<string, int>();
-            
+
             treeView1.Nodes.Clear();
             comboBox1.Items.Clear();
             comboBox1.Items.Add("ALL");
             comboBox1.SelectedIndex = 0;
+            labelResourceCount.Text = ResourceCount.ToString();
 
             try
             {
-                JsonDocument doc = JsonDocument.Parse(jsonString);
-                JsonElement entryNode = doc.RootElement.GetProperty("entry");
-                foreach (JsonElement item in entryNode.EnumerateArray())
-                {
-                    JsonElement resource = item.GetProperty("resource");
-                    string id = resource.GetProperty("id").GetString();
-                    string resourceType = resource.GetProperty("resourceType").GetString();
+                var parser = new FhirJsonParser();
+                Bundle bundle = parser.Parse<Bundle>(jsonString);
 
-                    if (ResourceTypeList.ContainsKey(resourceType))
+                foreach (var item in bundle.Entry)
+                {
+                    var serializer = new FhirJsonSerializer(new SerializerSettings
                     {
-                        ResourceTypeList[resourceType] += 1;
-                        TreeNode childNode = new TreeNode() { Name = id, Text = id, Tag = resource };
-                        ResourceList[resourceType].Nodes.Add(childNode);
+                        Pretty = true
+                    });
+                    string Jresource = serializer.SerializeToString(item.Resource);
+                    if (ResourceTypeList.ContainsKey(item.Resource.TypeName))
+                    {
+                        ResourceTypeList[item.Resource.TypeName] += 1;
+                        TreeNode childNode = new TreeNode() { Name = item.Resource.Id, Text = item.Resource.Id, Tag = Jresource };
+                        ResourceList[item.Resource.TypeName].Nodes.Add(childNode);
                     }
                     else
                     {
-                        ResourceTypeList.Add(resourceType, 1);
-                        TreeNode node = new TreeNode() { Name = resourceType, Text = resourceType, Tag = "P" };
-                        
-                        TreeNode childNode = new TreeNode() { Name = id, Text = id, Tag = resource };
-                        node.Nodes.Add(childNode);
-                        
-                        ResourceList.Add(resourceType, node);
-                    }
+                        ResourceTypeList.Add(item.Resource.TypeName, 1);
+                        TreeNode node = new TreeNode() { Name = item.Resource.TypeName, Text = item.Resource.TypeName, Tag = "P" };
 
+                        TreeNode childNode = new TreeNode() { Name = item.Resource.Id, Text = item.Resource.Id, Tag = Jresource };
+                        node.Nodes.Add(childNode);
+
+                        ResourceList.Add(item.Resource.TypeName, node);
+                    }
                     ResourceCount += 1;
                     labelResourceCount.Text = ResourceCount.ToString();
                     labelResourceCount.Refresh();
                 }
+
                 var Temp = ResourceTypeList.OrderBy(r => r.Key);
                 foreach (var item in Temp)
                 {
@@ -79,9 +85,10 @@ namespace FHIR_Bundle_Visualizer
                     treeView1.Nodes.Add(ResourceList[item.Key]);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                MessageBox.Show("Unable to read the Json file.");
+                MessageBox.Show("Unable to read the selected file." );
+                txtFilePath.Text = string.Empty;
             }
         }
 
