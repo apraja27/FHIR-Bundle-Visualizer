@@ -25,6 +25,7 @@ namespace FHIR_Bundle_Visualizer
 
         Dictionary<string, TreeNode> resourceList;
         int resourceCount = 0;
+        TreeNode SelectedNode;
         public void ClearAllControls()
         {
             groupBox3.Text = "Details";
@@ -35,11 +36,11 @@ namespace FHIR_Bundle_Visualizer
         {
             resourceCount = 0;
             resourceList = new Dictionary<string, TreeNode>();
-            
+
             btnBrowse.Enabled = false;
             checkBox1.Enabled = false;
             btnCopytoClipboard.Visible = false;
-            
+
             labelCopied.Hide();
             labelCopied.Refresh();
 
@@ -66,6 +67,8 @@ namespace FHIR_Bundle_Visualizer
                 treeView1.Nodes.Add(resourceList[item.Key]);
                 treeView1.Refresh();
             }
+            treeView1.SelectedNode = treeView1.Nodes[0];
+            SelectedNode = treeView1.Nodes[0];
             checkBox1.Visible = true;
             checkBox1.Checked = false;
         }
@@ -136,8 +139,8 @@ namespace FHIR_Bundle_Visualizer
             txtFilePath.Text = string.Empty;
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Filter = "Json files (*.json)|*.json|All files (*.*)|*.*";
-                openFileDialog.Title = "Select a File";
+                openFileDialog.Filter = "Json files (*.json)|*.json";
+                openFileDialog.Title = "Select a json File";
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
@@ -158,7 +161,7 @@ namespace FHIR_Bundle_Visualizer
                 catch (Exception)
                 {
                     txtFilePath.Text = string.Empty;
-                    MessageBox.Show("Unable to read selected file.");
+                    MessageBox.Show("Unable to read selected file.", "FHIR Bundle Visualizer", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 finally
                 {
@@ -171,12 +174,14 @@ namespace FHIR_Bundle_Visualizer
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             ClearAllControls();
+            SelectedNode = e.Node;
             SetValuesToControls(e.Node.Text, e.Node.Tag.ToString());
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             ClearAllControls();
+            SelectedNode = e.Node;
             SetValuesToControls(e.Node.Text, e.Node.Tag.ToString());
         }
 
@@ -186,12 +191,23 @@ namespace FHIR_Bundle_Visualizer
             {
                 string selectedReourcetype = comboBox1.SelectedItem.ToString();
                 treeView1.Nodes.Clear();
-                foreach (TreeNode item in resourceList.Values)
+                groupBox3.Text = "Details";
+                richTextBox1.Text = string.Empty;
+
+                var Temp = resourceList.OrderBy(r => r.Key);
+                foreach (var item in Temp)
                 {
-                    if (selectedReourcetype == "ALL" || item.Name == selectedReourcetype)
+                    if (selectedReourcetype == "ALL" || item.Key == selectedReourcetype)
                     {
-                        treeView1.Nodes.Add(item);
+                        treeView1.Nodes.Add(item.Value);
                     }
+                }
+                if(selectedReourcetype == "ALL")
+                {
+                    treeView1.SelectedNode = SelectedNode;
+                    treeView1.SelectedNode.EnsureVisible();
+                    treeView1.Focus();
+                    treeView1.Refresh();
                 }
             }
         }
@@ -202,11 +218,19 @@ namespace FHIR_Bundle_Visualizer
             {
                 checkBox1.Text = "Collapse All";
                 treeView1.ExpandAll();
+                treeView1.SelectedNode = SelectedNode;
+                treeView1.SelectedNode.EnsureVisible();
+                treeView1.Focus();
+                treeView1.Refresh();
             }
             else
             {
-                checkBox1.Text = "Expand All"; 
+                checkBox1.Text = "Expand All";
                 treeView1.CollapseAll();
+                treeView1.SelectedNode = SelectedNode;
+                treeView1.SelectedNode.EnsureVisible();
+                treeView1.Focus();
+                treeView1.Refresh();
             }
         }
 

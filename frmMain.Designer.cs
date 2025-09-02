@@ -38,12 +38,12 @@ namespace FHIR_Bundle_Visualizer
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.labelCopied = new System.Windows.Forms.Label();
-            this.btnCopytoClipboard = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.labelCopied = new System.Windows.Forms.Label();
             this.labelResourceCount = new System.Windows.Forms.Label();
+            this.btnCopytoClipboard = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
@@ -141,32 +141,12 @@ namespace FHIR_Bundle_Visualizer
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Details";
             // 
-            // labelCopied
-            // 
-            this.labelCopied.AutoSize = true;
-            this.labelCopied.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelCopied.ForeColor = System.Drawing.Color.Green;
-            this.labelCopied.Location = new System.Drawing.Point(397, 5);
-            this.labelCopied.Name = "labelCopied";
-            this.labelCopied.Size = new System.Drawing.Size(50, 13);
-            this.labelCopied.TabIndex = 3;
-            this.labelCopied.Text = "Copied!";
-            // 
-            // btnCopytoClipboard
-            // 
-            this.btnCopytoClipboard.Location = new System.Drawing.Point(277, 0);
-            this.btnCopytoClipboard.Name = "btnCopytoClipboard";
-            this.btnCopytoClipboard.Size = new System.Drawing.Size(114, 23);
-            this.btnCopytoClipboard.TabIndex = 1;
-            this.btnCopytoClipboard.Text = "Copy to Clipboard";
-            this.btnCopytoClipboard.UseVisualStyleBackColor = true;
-            this.btnCopytoClipboard.Click += new System.EventHandler(this.btnCopytoClipboard_Click);
-            // 
             // richTextBox1
             // 
             this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBox1.Location = new System.Drawing.Point(3, 16);
             this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.ReadOnly = true;
             this.richTextBox1.Size = new System.Drawing.Size(511, 302);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
@@ -193,6 +173,17 @@ namespace FHIR_Bundle_Visualizer
             this.panel1.Size = new System.Drawing.Size(794, 30);
             this.panel1.TabIndex = 2;
             // 
+            // labelCopied
+            // 
+            this.labelCopied.AutoSize = true;
+            this.labelCopied.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelCopied.ForeColor = System.Drawing.Color.Green;
+            this.labelCopied.Location = new System.Drawing.Point(397, 5);
+            this.labelCopied.Name = "labelCopied";
+            this.labelCopied.Size = new System.Drawing.Size(50, 13);
+            this.labelCopied.TabIndex = 3;
+            this.labelCopied.Text = "Copied!";
+            // 
             // labelResourceCount
             // 
             this.labelResourceCount.AutoSize = true;
@@ -202,6 +193,16 @@ namespace FHIR_Bundle_Visualizer
             this.labelResourceCount.Size = new System.Drawing.Size(14, 13);
             this.labelResourceCount.TabIndex = 1;
             this.labelResourceCount.Text = "0";
+            // 
+            // btnCopytoClipboard
+            // 
+            this.btnCopytoClipboard.Location = new System.Drawing.Point(277, 0);
+            this.btnCopytoClipboard.Name = "btnCopytoClipboard";
+            this.btnCopytoClipboard.Size = new System.Drawing.Size(114, 23);
+            this.btnCopytoClipboard.TabIndex = 1;
+            this.btnCopytoClipboard.Text = "Copy to Clipboard";
+            this.btnCopytoClipboard.UseVisualStyleBackColor = true;
+            this.btnCopytoClipboard.Click += new System.EventHandler(this.btnCopytoClipboard_Click);
             // 
             // label2
             // 
