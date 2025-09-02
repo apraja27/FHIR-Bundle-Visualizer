@@ -23,72 +23,69 @@ namespace FHIR_Bundle_Visualizer
             InitializeComponent();
         }
 
-        Dictionary<string, TreeNode> ResourceList;
-        Dictionary<string, int> ResourceTypeList;
-        int ResourceCount = 0;
+        Dictionary<string, TreeNode> resourceList;
+        int resourceCount = 0;
         public void ClearAllControls()
         {
             groupBox3.Text = "Details";
             richTextBox1.Text = string.Empty;
         }
 
-        public void SetJSONDetails(string jsonString)
+        public void ReInitializeValues()
         {
-            ResourceCount = 0;
-            ResourceList = new Dictionary<string, TreeNode>();
-            ResourceTypeList = new Dictionary<string, int>();
+            resourceCount = 0;
+            resourceList = new Dictionary<string, TreeNode>();
 
             treeView1.Nodes.Clear();
+            treeView1.Refresh();
             comboBox1.Items.Clear();
             comboBox1.Items.Add("ALL");
             comboBox1.SelectedIndex = 0;
-            labelResourceCount.Text = ResourceCount.ToString();
+            labelResourceCount.Text = resourceCount.ToString();
+        }
 
+        public void AssignValueToControls()
+        {
+            var Temp = resourceList.OrderBy(r => r.Key);
+            foreach (var item in Temp)
+            {
+                resourceList[item.Key].Text = $"{ item.Key.ToString() } ({item.Value.Nodes.Count.ToString()})";
+                comboBox1.Items.Add(item.Key);
+                treeView1.Nodes.Add(resourceList[item.Key]);
+                treeView1.Refresh();
+            }
+        }
+
+        public void SetJSONDetails(Bundle bundle)
+        {
             try
             {
-                var parser = new FhirJsonParser();
-                Bundle bundle = parser.Parse<Bundle>(jsonString);
-
                 foreach (var item in bundle.Entry)
                 {
-                    var serializer = new FhirJsonSerializer(new SerializerSettings
+                    var serializer = new FhirJsonSerializer(new SerializerSettings { Pretty = true });
+                    string jRresource = serializer.SerializeToString(item.Resource);
+                    if (resourceList.ContainsKey(item.Resource.TypeName))
                     {
-                        Pretty = true
-                    });
-                    string Jresource = serializer.SerializeToString(item.Resource);
-                    if (ResourceTypeList.ContainsKey(item.Resource.TypeName))
-                    {
-                        ResourceTypeList[item.Resource.TypeName] += 1;
-                        TreeNode childNode = new TreeNode() { Name = item.Resource.Id, Text = item.Resource.Id, Tag = Jresource };
-                        ResourceList[item.Resource.TypeName].Nodes.Add(childNode);
+                        TreeNode childNode = new TreeNode() { Name = item.Resource.Id, Text = item.Resource.Id, Tag = jRresource };
+                        resourceList[item.Resource.TypeName].Nodes.Add(childNode);
                     }
                     else
                     {
-                        ResourceTypeList.Add(item.Resource.TypeName, 1);
                         TreeNode node = new TreeNode() { Name = item.Resource.TypeName, Text = item.Resource.TypeName, Tag = "P" };
-
-                        TreeNode childNode = new TreeNode() { Name = item.Resource.Id, Text = item.Resource.Id, Tag = Jresource };
+                        TreeNode childNode = new TreeNode() { Name = item.Resource.Id, Text = item.Resource.Id, Tag = jRresource };
                         node.Nodes.Add(childNode);
 
-                        ResourceList.Add(item.Resource.TypeName, node);
+                        resourceList.Add(item.Resource.TypeName, node);
                     }
-                    ResourceCount += 1;
-                    labelResourceCount.Text = ResourceCount.ToString();
+                    resourceCount += 1;
+                    labelResourceCount.Text = resourceCount.ToString();
                     labelResourceCount.Refresh();
                 }
-
-                var Temp = ResourceTypeList.OrderBy(r => r.Key);
-                foreach (var item in Temp)
-                {
-                    comboBox1.Items.Add(item.Key);
-                    ResourceList[item.Key].Text = $"{ item.Key.ToString() } ({item.Value.ToString()})";
-                    treeView1.Nodes.Add(ResourceList[item.Key]);
-                }
+                AssignValueToControls();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                MessageBox.Show("Unable to read the selected file." );
-                txtFilePath.Text = string.Empty;
+                throw ex;
             }
         }
 
@@ -134,8 +131,19 @@ namespace FHIR_Bundle_Visualizer
             }
             if (txtFilePath.Text.Length > 0)
             {
-                var jsonString = File.ReadAllText(txtFilePath.Text);
-                SetJSONDetails(jsonString);
+                try
+                {
+                    ReInitializeValues();
+                    var jsonString = File.ReadAllText(txtFilePath.Text);
+                    var parser = new FhirJsonParser();
+                    Bundle bundle = parser.Parse<Bundle>(jsonString);
+                    SetJSONDetails(bundle);
+                }
+                catch (Exception)
+                {
+                    txtFilePath.Text = string.Empty;
+                    MessageBox.Show("Unable to read selected file.");
+                }
             }
         }
 
@@ -153,11 +161,11 @@ namespace FHIR_Bundle_Visualizer
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ResourceList != null && ResourceList.Count > 0)
+            if (resourceList != null && resourceList.Count > 0)
             {
                 string selectedReourcetype = comboBox1.SelectedItem.ToString();
                 treeView1.Nodes.Clear();
-                foreach (TreeNode item in ResourceList.Values)
+                foreach (TreeNode item in resourceList.Values)
                 {
                     if (selectedReourcetype == "ALL" || item.Name == selectedReourcetype)
                     {
