@@ -114,7 +114,7 @@ namespace FHIR_Bundle_Visualizer
                 JsonElement resource = doc.RootElement;
                 if (resource.ValueKind != JsonValueKind.Null)
                 {
-                    groupBox3.Text = SelectedKey;
+                    groupBox3.Text = $"Resource Id : {SelectedKey}";
                     richTextBox1.Text = ResourceString;
                     btnCopytoClipboard.Show();
                 }
@@ -136,7 +136,7 @@ namespace FHIR_Bundle_Visualizer
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            txtFilePath.Text = string.Empty;
+            bool fileSelected = false;
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "Json files (*.json)|*.json";
@@ -146,9 +146,10 @@ namespace FHIR_Bundle_Visualizer
                 {
                     txtFilePath.Text = openFileDialog.FileName;
                     txtFilePath.Refresh();
+                    fileSelected = true;
                 }
             }
-            if (txtFilePath.Text.Length > 0)
+            if (fileSelected && txtFilePath.Text.Length > 0)
             {
                 try
                 {
@@ -167,6 +168,7 @@ namespace FHIR_Bundle_Visualizer
                 {
                     btnBrowse.Enabled = true;
                     checkBox1.Enabled = true;
+                    txtJsonText.Text = string.Empty;
                 }
             }
         }
@@ -202,7 +204,7 @@ namespace FHIR_Bundle_Visualizer
                         treeView1.Nodes.Add(item.Value);
                     }
                 }
-                if(selectedReourcetype == "ALL")
+                if (selectedReourcetype == "ALL")
                 {
                     treeView1.SelectedNode = SelectedNode;
                     treeView1.SelectedNode.EnsureVisible();
@@ -221,7 +223,6 @@ namespace FHIR_Bundle_Visualizer
                 treeView1.SelectedNode = SelectedNode;
                 treeView1.SelectedNode.EnsureVisible();
                 treeView1.Focus();
-                treeView1.Refresh();
             }
             else
             {
@@ -230,7 +231,6 @@ namespace FHIR_Bundle_Visualizer
                 treeView1.SelectedNode = SelectedNode;
                 treeView1.SelectedNode.EnsureVisible();
                 treeView1.Focus();
-                treeView1.Refresh();
             }
         }
 
@@ -239,6 +239,7 @@ namespace FHIR_Bundle_Visualizer
             Clipboard.SetText(richTextBox1.Text);
             labelCopied.Show();
             timer1.Enabled = true;
+            treeView1.Focus();
         }
 
         int counter = 0;
@@ -250,6 +251,38 @@ namespace FHIR_Bundle_Visualizer
                 labelCopied.Visible = false;
                 timer1.Stop();
                 counter = 0;
+            }
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(richTextBox1.Text);
+            treeView1.Focus();
+        }
+
+        private void txtJsonText_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (txtJsonText.Text.Length > 0)
+                {
+                    txtFilePath.Text = string.Empty;
+                    ReInitializeValues();
+                    var jsonString = txtJsonText.Text;
+                    var parser = new FhirJsonParser();
+                    Bundle bundle = parser.Parse<Bundle>(jsonString);
+                    SetJSONDetails(bundle);
+                }
+            }
+            catch (Exception)
+            {
+                txtJsonText.Text = string.Empty;
+                MessageBox.Show("Unable to read pasted text.", "FHIR Bundle Visualizer", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            finally
+            {
+                btnBrowse.Enabled = true;
+                checkBox1.Enabled = true;
             }
         }
     }
