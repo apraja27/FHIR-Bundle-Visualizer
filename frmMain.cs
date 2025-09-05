@@ -1,5 +1,4 @@
-﻿//https://www.nuget.org/packages/Hl7.Fhir.STU3/6.0.0-rc1
-using Hl7.Fhir.Model;
+﻿using Hl7.Fhir.Model;
 using Hl7.Fhir.Serialization;
 using System;
 using System.Collections.Generic;
@@ -151,6 +150,7 @@ namespace FHIR_Bundle_Visualizer
             }
             if (fileSelected && txtFilePath.Text.Length > 0)
             {
+                txtJsonText.Text = string.Empty;
                 try
                 {
                     ReInitializeValues();
@@ -168,7 +168,6 @@ namespace FHIR_Bundle_Visualizer
                 {
                     btnBrowse.Enabled = true;
                     checkBox1.Enabled = true;
-                    txtJsonText.Text = string.Empty;
                 }
             }
         }
@@ -216,22 +215,28 @@ namespace FHIR_Bundle_Visualizer
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox1.Checked == true)
+            try
             {
-                checkBox1.Text = "Collapse All";
-                treeView1.ExpandAll();
-                treeView1.SelectedNode = SelectedNode;
-                treeView1.SelectedNode.EnsureVisible();
-                treeView1.Focus();
+                if (checkBox1.Checked == true)
+                {
+                    checkBox1.Text = "Collapse All";
+                    treeView1.ExpandAll();
+                    treeView1.SelectedNode = SelectedNode;
+                    if (treeView1.SelectedNode != null)
+                        treeView1.SelectedNode.EnsureVisible();
+                    treeView1.Focus();
+                }
+                else
+                {
+                    checkBox1.Text = "Expand All";
+                    treeView1.CollapseAll();
+                    treeView1.SelectedNode = SelectedNode;
+                    if (treeView1.SelectedNode != null)
+                        treeView1.SelectedNode.EnsureVisible();
+                    treeView1.Focus();
+                }
             }
-            else
-            {
-                checkBox1.Text = "Expand All";
-                treeView1.CollapseAll();
-                treeView1.SelectedNode = SelectedNode;
-                treeView1.SelectedNode.EnsureVisible();
-                treeView1.Focus();
-            }
+            catch { }
         }
 
         private void btnCopytoClipboard_Click(object sender, EventArgs e)
@@ -260,7 +265,8 @@ namespace FHIR_Bundle_Visualizer
             treeView1.Focus();
         }
 
-        private void txtJsonText_TextChanged(object sender, EventArgs e)
+
+        private void btnLoadJson_Click(object sender, EventArgs e)
         {
             try
             {
@@ -277,12 +283,24 @@ namespace FHIR_Bundle_Visualizer
             catch (Exception)
             {
                 txtJsonText.Text = string.Empty;
-                MessageBox.Show("Unable to read pasted text.", "FHIR Bundle Visualizer", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Unable to get details from text.", "FHIR Bundle Visualizer", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             finally
             {
                 btnBrowse.Enabled = true;
                 checkBox1.Enabled = true;
+            }
+        }
+
+        private void txtJsonText_TextChanged(object sender, EventArgs e)
+        {
+            if (txtJsonText.Text.Length > 0)
+            {
+                btnLoadJson.Enabled = true;
+            }
+            else
+            {
+                btnLoadJson.Enabled = false;
             }
         }
     }

@@ -32,6 +32,8 @@ namespace FHIR_Bundle_Visualizer
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.btnLoadJson = new System.Windows.Forms.Button();
             this.txtJsonText = new System.Windows.Forms.RichTextBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
@@ -55,6 +57,7 @@ namespace FHIR_Bundle_Visualizer
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox1.SuspendLayout();
             this.panel4.SuspendLayout();
+            this.panel5.SuspendLayout();
             this.panel3.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -73,26 +76,47 @@ namespace FHIR_Bundle_Visualizer
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(800, 74);
+            this.groupBox1.Size = new System.Drawing.Size(800, 101);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Browse file or Paste json";
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.panel5);
             this.panel4.Controls.Add(this.txtJsonText);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel4.Location = new System.Drawing.Point(417, 16);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(380, 55);
+            this.panel4.Size = new System.Drawing.Size(380, 82);
             this.panel4.TabIndex = 1;
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.btnLoadJson);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel5.Location = new System.Drawing.Point(280, 0);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(100, 82);
+            this.panel5.TabIndex = 2;
+            // 
+            // btnLoadJson
+            // 
+            this.btnLoadJson.Enabled = false;
+            this.btnLoadJson.Location = new System.Drawing.Point(2, 17);
+            this.btnLoadJson.Name = "btnLoadJson";
+            this.btnLoadJson.Size = new System.Drawing.Size(91, 23);
+            this.btnLoadJson.TabIndex = 0;
+            this.btnLoadJson.Text = "Load From Text";
+            this.btnLoadJson.UseVisualStyleBackColor = true;
+            this.btnLoadJson.Click += new System.EventHandler(this.btnLoadJson_Click);
             // 
             // txtJsonText
             // 
             this.txtJsonText.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtJsonText.Location = new System.Drawing.Point(0, 0);
             this.txtJsonText.Name = "txtJsonText";
-            this.txtJsonText.Size = new System.Drawing.Size(380, 55);
+            this.txtJsonText.Size = new System.Drawing.Size(380, 82);
             this.txtJsonText.TabIndex = 1;
             this.txtJsonText.Text = "";
             this.txtJsonText.TextChanged += new System.EventHandler(this.txtJsonText_TextChanged);
@@ -105,7 +129,7 @@ namespace FHIR_Bundle_Visualizer
             this.panel3.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel3.Location = new System.Drawing.Point(3, 16);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(414, 55);
+            this.panel3.Size = new System.Drawing.Size(414, 82);
             this.panel3.TabIndex = 0;
             // 
             // label1
@@ -165,7 +189,7 @@ namespace FHIR_Bundle_Visualizer
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(494, 293);
+            this.groupBox3.Size = new System.Drawing.Size(494, 266);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Details";
@@ -177,7 +201,7 @@ namespace FHIR_Bundle_Visualizer
             this.richTextBox1.Location = new System.Drawing.Point(3, 16);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
-            this.richTextBox1.Size = new System.Drawing.Size(488, 274);
+            this.richTextBox1.Size = new System.Drawing.Size(488, 247);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             // 
@@ -200,7 +224,7 @@ namespace FHIR_Bundle_Visualizer
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(300, 293);
+            this.treeView1.Size = new System.Drawing.Size(300, 266);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
@@ -268,7 +292,7 @@ namespace FHIR_Bundle_Visualizer
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.comboBox1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel2.Location = new System.Drawing.Point(0, 74);
+            this.panel2.Location = new System.Drawing.Point(0, 101);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(800, 53);
             this.panel2.TabIndex = 1;
@@ -285,7 +309,7 @@ namespace FHIR_Bundle_Visualizer
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 127);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 154);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -296,7 +320,7 @@ namespace FHIR_Bundle_Visualizer
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.groupBox3);
-            this.splitContainer1.Size = new System.Drawing.Size(800, 293);
+            this.splitContainer1.Size = new System.Drawing.Size(800, 266);
             this.splitContainer1.SplitterDistance = 300;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 5;
@@ -316,6 +340,7 @@ namespace FHIR_Bundle_Visualizer
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.groupBox1.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
+            this.panel5.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -357,6 +382,8 @@ namespace FHIR_Bundle_Visualizer
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Button btnLoadJson;
     }
 }
 
