@@ -162,7 +162,7 @@ namespace FHIR_Bundle_Visualizer
                 catch (Exception)
                 {
                     txtFilePath.Text = string.Empty;
-                    MessageBox.Show("Unable to read selected file.", "FHIR Bundle Visualizer", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Unable to read selected file. Please select a valid FHIR json file.", "FHIR Bundle Visualizer", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 finally
                 {
@@ -285,6 +285,7 @@ namespace FHIR_Bundle_Visualizer
                 if (txtJsonText.Text.Length > 0)
                 {
                     txtFilePath.Text = string.Empty;
+                    txtFilePath.Refresh();
                     ReInitializeValues();
                     var jsonString = txtJsonText.Text;
                     var parser = new FhirJsonParser();
