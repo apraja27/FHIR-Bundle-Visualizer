@@ -241,10 +241,16 @@ namespace FHIR_Bundle_Visualizer
 
         private void btnCopytoClipboard_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(richTextBox1.Text);
-            labelCopied.Show();
-            timer1.Enabled = true;
-            treeView1.Focus();
+            try
+            {
+                Clipboard.SetText(richTextBox1.Text);
+                labelCopied.Show();
+                timer1.Enabled = true;
+                treeView1.Focus();
+            }
+            catch
+            {
+            }
         }
 
         int counter = 0;
@@ -261,8 +267,14 @@ namespace FHIR_Bundle_Visualizer
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(richTextBox1.Text);
-            treeView1.Focus();
+            try
+            {
+                Clipboard.SetText(richTextBox1.Text);
+                treeView1.Focus();
+            }
+            catch
+            {
+            }
         }
 
 
