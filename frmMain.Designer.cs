@@ -53,6 +53,9 @@ namespace FHIR_Bundle_Visualizer
             this.label2 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
+            this.labelFHIRVersion = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.btnAllDetails = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox1.SuspendLayout();
@@ -179,7 +182,7 @@ namespace FHIR_Bundle_Visualizer
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(96, 6);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(176, 21);
+            this.comboBox1.Size = new System.Drawing.Size(204, 21);
             this.comboBox1.TabIndex = 1;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
@@ -231,7 +234,9 @@ namespace FHIR_Bundle_Visualizer
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.labelFHIRVersion);
             this.panel1.Controls.Add(this.labelCopied);
+            this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.labelResourceCount);
             this.panel1.Controls.Add(this.btnCopytoClipboard);
             this.panel1.Controls.Add(this.label2);
@@ -288,6 +293,7 @@ namespace FHIR_Bundle_Visualizer
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.btnAllDetails);
             this.panel2.Controls.Add(this.checkBox1);
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.comboBox1);
@@ -296,6 +302,36 @@ namespace FHIR_Bundle_Visualizer
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(800, 53);
             this.panel2.TabIndex = 1;
+            // 
+            // labelFHIRVersion
+            // 
+            this.labelFHIRVersion.AutoSize = true;
+            this.labelFHIRVersion.Location = new System.Drawing.Point(194, 9);
+            this.labelFHIRVersion.Name = "labelFHIRVersion";
+            this.labelFHIRVersion.Size = new System.Drawing.Size(51, 13);
+            this.labelFHIRVersion.TabIndex = 5;
+            this.labelFHIRVersion.Text = "Version : ";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(139, 9);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(61, 13);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "Version : ";
+            // 
+            // btnAllDetails
+            // 
+            this.btnAllDetails.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAllDetails.Location = new System.Drawing.Point(96, 27);
+            this.btnAllDetails.Name = "btnAllDetails";
+            this.btnAllDetails.Size = new System.Drawing.Size(130, 23);
+            this.btnAllDetails.TabIndex = 3;
+            this.btnAllDetails.Text = "Display Json Data";
+            this.btnAllDetails.UseVisualStyleBackColor = true;
+            this.btnAllDetails.Click += new System.EventHandler(this.btnAllDetails_Click);
             // 
             // label3
             // 
@@ -338,6 +374,7 @@ namespace FHIR_Bundle_Visualizer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FHIR Bundle Visualizer";
             this.Load += new System.EventHandler(this.frmMain_Load);
+            this.Resize += new System.EventHandler(this.frmMain_Resize);
             this.groupBox1.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
@@ -384,6 +421,9 @@ namespace FHIR_Bundle_Visualizer
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Button btnLoadJson;
+        private System.Windows.Forms.Button btnAllDetails;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label labelFHIRVersion;
     }
 }
 

@@ -24,7 +24,8 @@ namespace FHIR_Bundle_Visualizer
 
         Dictionary<string, TreeNode> resourceList;
         int resourceCount = 0;
-        TreeNode SelectedNode;
+        TreeNode selectedNode;
+        string completeJSON = string.Empty;
         public void ClearAllControls()
         {
             groupBox3.Text = "Details";
@@ -33,6 +34,8 @@ namespace FHIR_Bundle_Visualizer
 
         public void ReInitializeValues()
         {
+            selectedNode = null;
+            completeJSON = string.Empty;
             resourceCount = 0;
             resourceList = new Dictionary<string, TreeNode>();
 
@@ -66,9 +69,9 @@ namespace FHIR_Bundle_Visualizer
                 treeView1.Nodes.Add(resourceList[item.Key]);
                 treeView1.Refresh();
             }
-            treeView1.SelectedNode = treeView1.Nodes[0];
-            SelectedNode = treeView1.Nodes[0];
+            selectedNode = treeView1.Nodes[0];
             checkBox1.Visible = true;
+            btnAllDetails.Visible = true;
             checkBox1.Checked = false;
         }
 
@@ -111,9 +114,10 @@ namespace FHIR_Bundle_Visualizer
             {
                 JsonDocument doc = JsonDocument.Parse(ResourceString);
                 JsonElement resource = doc.RootElement;
+                string resourceType = resource.GetProperty("resourceType").GetString();
                 if (resource.ValueKind != JsonValueKind.Null)
                 {
-                    groupBox3.Text = $"Resource Id : {SelectedKey}";
+                    groupBox3.Text = $"Resource Type: {resourceType}, Resource Id : {SelectedKey}";
                     richTextBox1.Text = ResourceString;
                     btnCopytoClipboard.Show();
                 }
@@ -124,6 +128,24 @@ namespace FHIR_Bundle_Visualizer
             }
         }
 
+        public static string GetFhirVersion(Bundle bundle)
+        {
+            string VersionName = "Likely R4 or STU3 (both support it)";
+            if (bundle.Meta?.Profile != null)
+            {
+                foreach (var profile in bundle.Meta.Profile)
+                {
+                    if (profile.Contains("StructureDefinition") && profile.Contains("STU3"))
+                        VersionName = "STU3";
+                    if (profile.Contains("StructureDefinition") && profile.Contains("R4"))
+                        VersionName = "R4";
+                }
+            }
+            if (bundle.Type == Bundle.BundleType.Searchset)
+                VersionName = "Likely R4 or STU3 (both support it)";
+            return string.Empty;
+        }
+
         private void frmMain_Load(object sender, EventArgs e)
         {
             comboBox1.Items.Add("ALL");
@@ -131,6 +153,9 @@ namespace FHIR_Bundle_Visualizer
             labelCopied.Hide();
             btnCopytoClipboard.Hide();
             checkBox1.Visible = false;
+            btnAllDetails.Visible = false;
+            labelFHIRVersion.Text = string.Empty;
+            label4.Text = string.Empty;
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -155,9 +180,11 @@ namespace FHIR_Bundle_Visualizer
                 {
                     ReInitializeValues();
                     var jsonString = File.ReadAllText(txtFilePath.Text);
+                    completeJSON = jsonString;
                     var parser = new FhirJsonParser();
                     Bundle bundle = parser.Parse<Bundle>(jsonString);
                     SetJSONDetails(bundle);
+                    labelFHIRVersion.Text = GetFhirVersion(bundle);
                 }
                 catch (Exception)
                 {
@@ -175,14 +202,14 @@ namespace FHIR_Bundle_Visualizer
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             ClearAllControls();
-            SelectedNode = e.Node;
+            selectedNode = e.Node;
             SetValuesToControls(e.Node.Text, e.Node.Tag.ToString());
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             ClearAllControls();
-            SelectedNode = e.Node;
+            selectedNode = e.Node;
             SetValuesToControls(e.Node.Text, e.Node.Tag.ToString());
         }
 
@@ -194,22 +221,32 @@ namespace FHIR_Bundle_Visualizer
                 treeView1.Nodes.Clear();
                 groupBox3.Text = "Details";
                 richTextBox1.Text = string.Empty;
-
-                var Temp = resourceList.OrderBy(r => r.Key);
-                foreach (var item in Temp)
+                try
                 {
-                    if (selectedReourcetype == "ALL" || item.Key == selectedReourcetype)
+                    var Temp = resourceList.OrderBy(r => r.Key);
+                    foreach (var item in Temp)
                     {
-                        treeView1.Nodes.Add(item.Value);
+                        if (selectedReourcetype == "ALL" || item.Key == selectedReourcetype)
+                        {
+                            treeView1.Nodes.Add(item.Value);
+                        }
+                    }
+                    if (selectedReourcetype == "ALL")
+                    {
+                        treeView1.SelectedNode = selectedNode;
+                        if (treeView1.SelectedNode != null)
+                            treeView1.SelectedNode.EnsureVisible();
                     }
                 }
-                if (selectedReourcetype == "ALL")
+                catch
                 {
-                    treeView1.SelectedNode = SelectedNode;
-                    treeView1.SelectedNode.EnsureVisible();
+                }
+                finally
+                {
                     treeView1.Focus();
                     treeView1.Refresh();
                 }
+
             }
         }
 
@@ -221,22 +258,21 @@ namespace FHIR_Bundle_Visualizer
                 {
                     checkBox1.Text = "Collapse All";
                     treeView1.ExpandAll();
-                    treeView1.SelectedNode = SelectedNode;
-                    if (treeView1.SelectedNode != null)
-                        treeView1.SelectedNode.EnsureVisible();
-                    treeView1.Focus();
                 }
                 else
                 {
                     checkBox1.Text = "Expand All";
                     treeView1.CollapseAll();
-                    treeView1.SelectedNode = SelectedNode;
-                    if (treeView1.SelectedNode != null)
-                        treeView1.SelectedNode.EnsureVisible();
-                    treeView1.Focus();
                 }
+                treeView1.SelectedNode = selectedNode;
+                if (treeView1.SelectedNode != null)
+                    treeView1.SelectedNode.EnsureVisible();
             }
             catch { }
+            finally
+            {
+                treeView1.Focus();
+            }
         }
 
         private void btnCopytoClipboard_Click(object sender, EventArgs e)
@@ -246,10 +282,13 @@ namespace FHIR_Bundle_Visualizer
                 Clipboard.SetText(richTextBox1.Text);
                 labelCopied.Show();
                 timer1.Enabled = true;
-                treeView1.Focus();
             }
             catch
             {
+            }
+            finally
+            {
+                treeView1.Focus();
             }
         }
 
@@ -270,10 +309,13 @@ namespace FHIR_Bundle_Visualizer
             try
             {
                 Clipboard.SetText(richTextBox1.Text);
-                treeView1.Focus();
             }
             catch
             {
+            }
+            finally
+            {
+                treeView1.Focus();
             }
         }
 
@@ -288,9 +330,11 @@ namespace FHIR_Bundle_Visualizer
                     txtFilePath.Refresh();
                     ReInitializeValues();
                     var jsonString = txtJsonText.Text;
+                    completeJSON = jsonString;
                     var parser = new FhirJsonParser();
                     Bundle bundle = parser.Parse<Bundle>(jsonString);
                     SetJSONDetails(bundle);
+                    labelFHIRVersion.Text = GetFhirVersion(bundle);
                 }
             }
             catch (Exception)
@@ -315,6 +359,22 @@ namespace FHIR_Bundle_Visualizer
             {
                 btnLoadJson.Enabled = false;
             }
+        }
+
+        private void frmMain_Resize(object sender, EventArgs e)
+        {
+            try
+            {
+                splitContainer1.SplitterDistance = 300;
+            }
+            catch
+            {
+            }
+        }
+
+        private void btnAllDetails_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = completeJSON;
         }
     }
 }
