@@ -41,6 +41,7 @@ namespace FHIR_Bundle_Visualizer
 
             btnBrowse.Enabled = false;
             checkBox1.Enabled = false;
+            btnAllDetails.Enabled = false;
             btnCopytoClipboard.Visible = false;
 
             labelCopied.Hide();
@@ -195,6 +196,7 @@ namespace FHIR_Bundle_Visualizer
                 {
                     btnBrowse.Enabled = true;
                     checkBox1.Enabled = true;
+                    btnAllDetails.Enabled = true;
                 }
             }
         }
@@ -313,10 +315,6 @@ namespace FHIR_Bundle_Visualizer
             catch
             {
             }
-            finally
-            {
-                treeView1.Focus();
-            }
         }
 
 
@@ -346,6 +344,7 @@ namespace FHIR_Bundle_Visualizer
             {
                 btnBrowse.Enabled = true;
                 checkBox1.Enabled = true;
+                btnAllDetails.Enabled = true;
             }
         }
 
@@ -374,6 +373,7 @@ namespace FHIR_Bundle_Visualizer
 
         private void btnAllDetails_Click(object sender, EventArgs e)
         {
+            groupBox3.Text = "All Details";
             richTextBox1.Text = completeJSON;
         }
     }
