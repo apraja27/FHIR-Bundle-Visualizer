@@ -58,6 +58,9 @@ namespace FHIR_Bundle_Visualizer
             comboBox1.Items.Clear();
             comboBox1.Items.Add("ALL");
             comboBox1.SelectedIndex = 0;
+
+            labelPatientAge.Text = string.Empty;
+            labelPatientName.Text = string.Empty;
         }
 
         public void AssignValueToControls()
@@ -74,6 +77,15 @@ namespace FHIR_Bundle_Visualizer
             checkBox1.Visible = true;
             btnAllDetails.Visible = true;
             checkBox1.Checked = false;
+        }
+
+        public void SetPatientNameAndAge(Patient patient)
+        {
+            labelPatientName.Text = patient.Name[0].ToString();
+            DateTime birthDate = new DateTime();
+            DateTime.TryParse(patient.BirthDate.ToString(), out birthDate);
+            TimeSpan age = DateTime.UtcNow - birthDate;
+            labelPatientAge.Text = ((int)(age.TotalDays / 365)).ToString() + " Years";
         }
 
         public void SetJSONDetails(Bundle bundle)
@@ -100,6 +112,10 @@ namespace FHIR_Bundle_Visualizer
                     resourceCount += 1;
                     labelResourceCount.Text = resourceCount.ToString();
                     labelResourceCount.Refresh();
+                    if (item.Resource is Patient patient)
+                    {
+                        SetPatientNameAndAge(patient);
+                    }
                 }
                 AssignValueToControls();
             }
@@ -131,7 +147,7 @@ namespace FHIR_Bundle_Visualizer
 
         public static string GetFhirVersion(Bundle bundle)
         {
-            string VersionName = "Likely R4 or STU3 (both support it)";
+            string VersionName = "Unknown";
             if (bundle.Meta?.Profile != null)
             {
                 foreach (var profile in bundle.Meta.Profile)
@@ -143,8 +159,8 @@ namespace FHIR_Bundle_Visualizer
                 }
             }
             if (bundle.Type == Bundle.BundleType.Searchset)
-                VersionName = "Likely R4 or STU3 (both support it)";
-            return string.Empty;
+                VersionName = "Unknown";
+            return VersionName;
         }
 
         private void frmMain_Load(object sender, EventArgs e)
@@ -156,7 +172,8 @@ namespace FHIR_Bundle_Visualizer
             checkBox1.Visible = false;
             btnAllDetails.Visible = false;
             labelFHIRVersion.Text = string.Empty;
-            label4.Text = string.Empty;
+            labelPatientName.Text = string.Empty;
+            labelPatientAge.Text = string.Empty;
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
