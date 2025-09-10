@@ -20,12 +20,15 @@ namespace FHIR_Bundle_Visualizer.Fhir.Parser
                                     .Select(e => e.Resource)
                                     .OfType<R4::Hl7.Fhir.Model.Patient>()
                                     .FirstOrDefault();
-                patientDetails.Name = patient.Name[0].ToString();
-                patientDetails.BirthDate = patient.BirthDate;
-                DateTime birthDate = new DateTime();
-                DateTime.TryParse(patient.BirthDate.ToString(), out birthDate);
-                TimeSpan age = DateTime.UtcNow - birthDate;
-                patientDetails.Age = ((int)(age.TotalDays / 365)).ToString() + " Years";
+                if (patient != null)
+                {
+                    patientDetails.Name = patient.Name[0].ToString();
+                    patientDetails.BirthDate = patient.BirthDate;
+                    DateTime birthDate = new DateTime();
+                    DateTime.TryParse(patient.BirthDate.ToString(), out birthDate);
+                    TimeSpan age = DateTime.UtcNow - birthDate;
+                    patientDetails.Age = ((int)(age.TotalDays / 365)).ToString() + " Years";
+                }
             }
             catch (Exception ex)
             {
