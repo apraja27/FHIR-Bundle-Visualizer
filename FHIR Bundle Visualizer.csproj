@@ -8,10 +8,11 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>FHIR_Bundle_Visualizer</RootNamespace>
     <AssemblyName>FHIR Bundle Visualizer</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -39,8 +40,16 @@
     <Reference Include="Hl7.Fhir.Base, Version=5.12.2.0, Culture=neutral, PublicKeyToken=d706911480550fc3, processorArchitecture=MSIL">
       <HintPath>packages\Hl7.Fhir.Base.5.12.2\lib\netstandard2.0\Hl7.Fhir.Base.dll</HintPath>
     </Reference>
+    <Reference Include="Hl7.Fhir.Conformance, Version=5.12.2.0, Culture=neutral, PublicKeyToken=d706911480550fc3, processorArchitecture=MSIL">
+      <HintPath>packages\Hl7.Fhir.Conformance.5.12.2\lib\netstandard2.0\Hl7.Fhir.Conformance.dll</HintPath>
+    </Reference>
+    <Reference Include="Hl7.Fhir.R4, Version=5.12.2.0, Culture=neutral, PublicKeyToken=d706911480550fc3, processorArchitecture=MSIL">
+      <HintPath>packages\Hl7.Fhir.R4.5.12.2\lib\netstandard2.0\Hl7.Fhir.R4.dll</HintPath>
+      <Aliases>R4</Aliases>
+    </Reference>
     <Reference Include="Hl7.Fhir.STU3, Version=5.12.2.0, Culture=neutral, PublicKeyToken=d706911480550fc3, processorArchitecture=MSIL">
       <HintPath>packages\Hl7.Fhir.STU3.5.12.2\lib\netstandard2.0\Hl7.Fhir.STU3.dll</HintPath>
+      <Aliases>STU3</Aliases>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.8, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.9.0.8\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -99,6 +108,9 @@
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Fhir.Parser\Hl7FhirR4.cs" />
+    <Compile Include="Fhir.Parser\Hl7FhirSTU3.cs" />
+    <Compile Include="PatientDetails.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmMain.resx">
@@ -112,6 +124,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include=".editorconfig" />
     <None Include="packages.config" />
@@ -128,6 +141,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

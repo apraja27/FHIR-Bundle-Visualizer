@@ -47,7 +47,7 @@ namespace FHIR_Bundle_Visualizer
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.labelFHIRVersion = new System.Windows.Forms.Label();
+            this.labelFileVersion = new System.Windows.Forms.Label();
             this.labelCopied = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.labelResourceCount = new System.Windows.Forms.Label();
@@ -55,13 +55,15 @@ namespace FHIR_Bundle_Visualizer
             this.label2 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
+            this.labelPatientAge = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.labelPatientName = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.btnAllDetails = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.labelPatientName = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.labelPatientAge = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
+            this.labelBirthDate = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -238,7 +240,7 @@ namespace FHIR_Bundle_Visualizer
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.labelFHIRVersion);
+            this.panel1.Controls.Add(this.labelFileVersion);
             this.panel1.Controls.Add(this.labelCopied);
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.labelResourceCount);
@@ -250,15 +252,15 @@ namespace FHIR_Bundle_Visualizer
             this.panel1.Size = new System.Drawing.Size(800, 30);
             this.panel1.TabIndex = 2;
             // 
-            // labelFHIRVersion
+            // labelFileVersion
             // 
-            this.labelFHIRVersion.AutoSize = true;
-            this.labelFHIRVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelFHIRVersion.Location = new System.Drawing.Point(186, 9);
-            this.labelFHIRVersion.Name = "labelFHIRVersion";
-            this.labelFHIRVersion.Size = new System.Drawing.Size(61, 13);
-            this.labelFHIRVersion.TabIndex = 5;
-            this.labelFHIRVersion.Text = "Version : ";
+            this.labelFileVersion.AutoSize = true;
+            this.labelFileVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelFileVersion.Location = new System.Drawing.Point(186, 9);
+            this.labelFileVersion.Name = "labelFileVersion";
+            this.labelFileVersion.Size = new System.Drawing.Size(61, 13);
+            this.labelFileVersion.TabIndex = 5;
+            this.labelFileVersion.Text = "Version : ";
             // 
             // labelCopied
             // 
@@ -317,6 +319,8 @@ namespace FHIR_Bundle_Visualizer
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.labelBirthDate);
+            this.panel2.Controls.Add(this.label8);
             this.panel2.Controls.Add(this.labelPatientAge);
             this.panel2.Controls.Add(this.label7);
             this.panel2.Controls.Add(this.labelPatientName);
@@ -330,6 +334,46 @@ namespace FHIR_Bundle_Visualizer
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(800, 53);
             this.panel2.TabIndex = 1;
+            // 
+            // labelPatientAge
+            // 
+            this.labelPatientAge.AutoSize = true;
+            this.labelPatientAge.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelPatientAge.Location = new System.Drawing.Point(405, 37);
+            this.labelPatientAge.Name = "labelPatientAge";
+            this.labelPatientAge.Size = new System.Drawing.Size(73, 13);
+            this.labelPatientAge.TabIndex = 9;
+            this.labelPatientAge.Text = "Patient Age";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(329, 37);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(65, 13);
+            this.label7.TabIndex = 8;
+            this.label7.Text = "Patient Age:";
+            // 
+            // labelPatientName
+            // 
+            this.labelPatientName.AutoSize = true;
+            this.labelPatientName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelPatientName.Location = new System.Drawing.Point(405, 6);
+            this.labelPatientName.Name = "labelPatientName";
+            this.labelPatientName.Size = new System.Drawing.Size(83, 13);
+            this.labelPatientName.TabIndex = 7;
+            this.labelPatientName.Text = "Patient Name";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(329, 6);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(74, 13);
+            this.label6.TabIndex = 6;
+            this.label6.Text = "Patient Name:";
             // 
             // btnAllDetails
             // 
@@ -370,45 +414,25 @@ namespace FHIR_Bundle_Visualizer
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 5;
             // 
-            // labelPatientName
+            // labelBirthDate
             // 
-            this.labelPatientName.AutoSize = true;
-            this.labelPatientName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelPatientName.Location = new System.Drawing.Point(405, 14);
-            this.labelPatientName.Name = "labelPatientName";
-            this.labelPatientName.Size = new System.Drawing.Size(83, 13);
-            this.labelPatientName.TabIndex = 7;
-            this.labelPatientName.Text = "Patient Name";
+            this.labelBirthDate.AutoSize = true;
+            this.labelBirthDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelBirthDate.Location = new System.Drawing.Point(405, 22);
+            this.labelBirthDate.Name = "labelBirthDate";
+            this.labelBirthDate.Size = new System.Drawing.Size(64, 13);
+            this.labelBirthDate.TabIndex = 11;
+            this.labelBirthDate.Text = "Birth Date";
             // 
-            // label6
+            // label8
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(329, 14);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(74, 13);
-            this.label6.TabIndex = 6;
-            this.label6.Text = "Patient Name:";
-            // 
-            // labelPatientAge
-            // 
-            this.labelPatientAge.AutoSize = true;
-            this.labelPatientAge.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelPatientAge.Location = new System.Drawing.Point(405, 32);
-            this.labelPatientAge.Name = "labelPatientAge";
-            this.labelPatientAge.Size = new System.Drawing.Size(73, 13);
-            this.labelPatientAge.TabIndex = 9;
-            this.labelPatientAge.Text = "Patient Age";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(329, 32);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(65, 13);
-            this.label7.TabIndex = 8;
-            this.label7.Text = "Patient Age:";
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(329, 22);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(60, 13);
+            this.label8.TabIndex = 10;
+            this.label8.Text = "Birth Date :";
             // 
             // frmMain
             // 
@@ -472,11 +496,13 @@ namespace FHIR_Bundle_Visualizer
         private System.Windows.Forms.Button btnLoadJson;
         private System.Windows.Forms.Button btnAllDetails;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label labelFHIRVersion;
+        private System.Windows.Forms.Label labelFileVersion;
         private System.Windows.Forms.Label labelPatientName;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label labelPatientAge;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label labelBirthDate;
+        private System.Windows.Forms.Label label8;
     }
 }
 

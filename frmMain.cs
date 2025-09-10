@@ -1,4 +1,5 @@
-﻿using Hl7.Fhir.Model;
+﻿using FHIR_Bundle_Visualizer.Fhir.Parser;
+using Hl7.Fhir.Model;
 using Hl7.Fhir.Serialization;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,8 @@ namespace FHIR_Bundle_Visualizer
         int resourceCount = 0;
         TreeNode selectedNode;
         string completeJSON = string.Empty;
+        int fileVersion = 0;
+
         public void ClearAllControls()
         {
             groupBox3.Text = "Details";
@@ -59,8 +62,10 @@ namespace FHIR_Bundle_Visualizer
             comboBox1.Items.Add("ALL");
             comboBox1.SelectedIndex = 0;
 
+            labelFileVersion.Text = string.Empty;
             labelPatientAge.Text = string.Empty;
             labelPatientName.Text = string.Empty;
+            labelBirthDate.Text = string.Empty;
         }
 
         public void AssignValueToControls()
@@ -79,32 +84,73 @@ namespace FHIR_Bundle_Visualizer
             checkBox1.Checked = false;
         }
 
-        public void SetPatientNameAndAge(Patient patient)
+        public void SetPatientDetails(Bundle bundle)
         {
-            labelPatientName.Text = patient.Name[0].ToString();
-            DateTime birthDate = new DateTime();
-            DateTime.TryParse(patient.BirthDate.ToString(), out birthDate);
-            TimeSpan age = DateTime.UtcNow - birthDate;
-            labelPatientAge.Text = ((int)(age.TotalDays / 365)).ToString() + " Years";
+            PatientDetails patientDetails = null;
+            if (fileVersion == 1)
+            {
+                patientDetails = Hl7FhirSTU3.GetPatientDetails(bundle);
+            }
+            else if (fileVersion == 2)
+            {
+                patientDetails = Hl7FhirR4.GetPatientDetails(bundle);
+            }
+
+            if (patientDetails != null)
+            {
+                labelPatientName.Text = patientDetails.Name;
+                labelPatientAge.Text = patientDetails.Age;
+                labelBirthDate.Text = patientDetails.BirthDate;
+            }
         }
 
-        public void SetJSONDetails(Bundle bundle)
+        public Bundle DeserializeFromString(string jsonString)
+        {
+            Bundle bundle = null;
+            try
+            {
+                bundle = Hl7FhirSTU3.DeserializeFromString(jsonString);
+                fileVersion = 1;
+            }
+            catch
+            {
+                try
+                {
+                    bundle = Hl7FhirR4.DeserializeFromString(jsonString);
+                    fileVersion = 2;
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+            return bundle;
+        }
+
+        public void SetJsonDetails(Bundle bundle)
         {
             try
             {
                 foreach (var item in bundle.Entry)
                 {
-                    var serializer = new FhirJsonSerializer(new SerializerSettings { Pretty = true });
-                    string jRresource = serializer.SerializeToString(item.Resource);
+                    string tag = string.Empty;
+                    if (fileVersion == 1)
+                    {
+                        tag = Hl7FhirSTU3.SerializeToString(item.Resource);
+                    }
+                    else if (fileVersion == 2)
+                    {
+                        tag = Hl7FhirR4.SerializeToString(item.Resource);
+                    }
                     if (resourceList.ContainsKey(item.Resource.TypeName))
                     {
-                        TreeNode childNode = new TreeNode() { Name = item.Resource.Id, Text = item.Resource.Id, Tag = jRresource };
+                        TreeNode childNode = new TreeNode() { Name = item.Resource.Id, Text = item.Resource.Id, Tag = tag };
                         resourceList[item.Resource.TypeName].Nodes.Add(childNode);
                     }
                     else
                     {
                         TreeNode node = new TreeNode() { Name = item.Resource.TypeName, Text = item.Resource.TypeName, Tag = "P" };
-                        TreeNode childNode = new TreeNode() { Name = item.Resource.Id, Text = item.Resource.Id, Tag = jRresource };
+                        TreeNode childNode = new TreeNode() { Name = item.Resource.Id, Text = item.Resource.Id, Tag = tag };
                         node.Nodes.Add(childNode);
 
                         resourceList.Add(item.Resource.TypeName, node);
@@ -112,11 +158,8 @@ namespace FHIR_Bundle_Visualizer
                     resourceCount += 1;
                     labelResourceCount.Text = resourceCount.ToString();
                     labelResourceCount.Refresh();
-                    if (item.Resource is Patient patient)
-                    {
-                        SetPatientNameAndAge(patient);
-                    }
                 }
+                SetPatientDetails(bundle);
                 AssignValueToControls();
             }
             catch (Exception ex)
@@ -125,17 +168,17 @@ namespace FHIR_Bundle_Visualizer
             }
         }
 
-        public void SetValuesToControls(string SelectedKey, string ResourceString)
+        public void SetValuesToControls(string selectedKey, string resourceString)
         {
-            if (ResourceString != "P")
+            if (resourceString != "P")
             {
-                JsonDocument doc = JsonDocument.Parse(ResourceString);
+                JsonDocument doc = JsonDocument.Parse(resourceString);
                 JsonElement resource = doc.RootElement;
                 string resourceType = resource.GetProperty("resourceType").GetString();
                 if (resource.ValueKind != JsonValueKind.Null)
                 {
-                    groupBox3.Text = $"Resource Type: {resourceType}, Resource Id : {SelectedKey}";
-                    richTextBox1.Text = ResourceString;
+                    groupBox3.Text = $"Resource Type: {resourceType}, Resource Id : {selectedKey}";
+                    richTextBox1.Text = resourceString;
                     btnCopytoClipboard.Show();
                 }
             }
@@ -145,22 +188,18 @@ namespace FHIR_Bundle_Visualizer
             }
         }
 
-        public static string GetFhirVersion(Bundle bundle)
+        public string GetFileVersionName()
         {
-            string VersionName = "Unknown";
-            if (bundle.Meta?.Profile != null)
+            string versionName = "Unknown";
+            if (fileVersion == 1)
             {
-                foreach (var profile in bundle.Meta.Profile)
-                {
-                    if (profile.Contains("StructureDefinition") && profile.Contains("STU3"))
-                        VersionName = "STU3";
-                    if (profile.Contains("StructureDefinition") && profile.Contains("R4"))
-                        VersionName = "R4";
-                }
+                versionName = "STU3";
             }
-            if (bundle.Type == Bundle.BundleType.Searchset)
-                VersionName = "Unknown";
-            return VersionName;
+            else if (fileVersion == 2)
+            {
+                versionName = "R4";
+            }
+            return versionName;
         }
 
         private void frmMain_Load(object sender, EventArgs e)
@@ -171,9 +210,10 @@ namespace FHIR_Bundle_Visualizer
             btnCopytoClipboard.Hide();
             checkBox1.Visible = false;
             btnAllDetails.Visible = false;
-            labelFHIRVersion.Text = string.Empty;
+            labelFileVersion.Text = string.Empty;
             labelPatientName.Text = string.Empty;
             labelPatientAge.Text = string.Empty;
+            labelBirthDate.Text = string.Empty;
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -199,10 +239,9 @@ namespace FHIR_Bundle_Visualizer
                     ReInitializeValues();
                     var jsonString = File.ReadAllText(txtFilePath.Text);
                     completeJSON = jsonString;
-                    var parser = new FhirJsonParser();
-                    Bundle bundle = parser.Parse<Bundle>(jsonString);
-                    SetJSONDetails(bundle);
-                    labelFHIRVersion.Text = GetFhirVersion(bundle);
+                    Bundle bundle = DeserializeFromString(jsonString);
+                    SetJsonDetails(bundle);
+                    labelFileVersion.Text = GetFileVersionName();
                 }
                 catch (Exception)
                 {
@@ -346,10 +385,9 @@ namespace FHIR_Bundle_Visualizer
                     ReInitializeValues();
                     var jsonString = txtJsonText.Text;
                     completeJSON = jsonString;
-                    var parser = new FhirJsonParser();
-                    Bundle bundle = parser.Parse<Bundle>(jsonString);
-                    SetJSONDetails(bundle);
-                    labelFHIRVersion.Text = GetFhirVersion(bundle);
+                    Bundle bundle = DeserializeFromString(jsonString);
+                    SetJsonDetails(bundle);
+                    labelFileVersion.Text = GetFileVersionName();
                 }
             }
             catch (Exception)
