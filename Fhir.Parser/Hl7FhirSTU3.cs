@@ -23,7 +23,16 @@ namespace FHIR_Bundle_Visualizer.Fhir.Parser
                                     .FirstOrDefault();
                 if (patient != null)
                 {
-                    patientDetails.Name = patient.Name[0].ToString();
+                    string prefix = string.Empty;
+                    var prefixes = patient.Name[0].Prefix;
+                    if (prefixes != null && prefixes.Count() > 0)
+                    {
+                        foreach (var item in prefixes)
+                        {
+                            prefix = item;
+                        }
+                    }
+                    patientDetails.Name = $"{prefix} {patient.Name[0].ToString()}";
                     DateTime birthDate = new DateTime();
                     DateTime.TryParse(patient.BirthDate.ToString(), out birthDate);
                     TimeSpan age = DateTime.UtcNow - birthDate;
@@ -37,7 +46,7 @@ namespace FHIR_Bundle_Visualizer.Fhir.Parser
             }
             return patientDetails;
         }
-        
+
         public static string SerializeToString(Base resource)
         {
             var serializer = new STU3::Hl7.Fhir.Serialization.FhirJsonSerializer(new SerializerSettings { Pretty = true });
