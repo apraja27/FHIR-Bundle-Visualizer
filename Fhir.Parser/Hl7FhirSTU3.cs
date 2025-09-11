@@ -24,10 +24,10 @@ namespace FHIR_Bundle_Visualizer.Fhir.Parser
                 if (patient != null)
                 {
                     patientDetails.Name = patient.Name[0].ToString();
-                    patientDetails.BirthDate = patient.BirthDate;
                     DateTime birthDate = new DateTime();
                     DateTime.TryParse(patient.BirthDate.ToString(), out birthDate);
                     TimeSpan age = DateTime.UtcNow - birthDate;
+                    patientDetails.BirthDate = birthDate.ToString("dd-MM-yyyy");
                     patientDetails.Age = ((int)(age.TotalDays / 365)).ToString() + " Years";
                 }
             }
