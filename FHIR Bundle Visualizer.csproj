@@ -110,7 +110,7 @@
     </Compile>
     <Compile Include="Fhir.Parser\Hl7FhirR4.cs" />
     <Compile Include="Fhir.Parser\Hl7FhirSTU3.cs" />
-    <Compile Include="PatientDetails.cs" />
+    <Compile Include="Models\PatientDetails.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmMain.resx">
@@ -142,8 +142,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

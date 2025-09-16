@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FHIR_Bundle_Visualizer.Models;
 
 namespace FHIR_Bundle_Visualizer.Fhir.Parser
 {
@@ -23,20 +24,20 @@ namespace FHIR_Bundle_Visualizer.Fhir.Parser
                 if (patient != null)
                 {
                     string prefix = string.Empty;
-                    var prefixes = patient.Name[0].Prefix;
-                    if (prefixes != null && prefixes.Count() > 0)
+                    string familyName = string.Empty;
+                    string givenName = string.Empty;
+                    if (patient.Name != null && patient.Name.Count() > 0)
                     {
-                        foreach (var item in prefixes)
-                        {
-                            prefix = item;
-                        }
+                        prefix = patientDetails.GetPrefix(patient.Name[0].Prefix);
+                        familyName = patient.Name[0].Family.Trim();
+                        givenName = patientDetails.GetGivenName(patient.Name[0].Given);
                     }
-                    patientDetails.Name = $"{prefix} {patient.Name[0].ToString()}";
-                    DateTime birthDate = new DateTime();
-                    DateTime.TryParse(patient.BirthDate.ToString(), out birthDate);
-                    TimeSpan age = DateTime.UtcNow - birthDate;
-                    patientDetails.BirthDate = birthDate.ToString("dd-MM-yyyy");
-                    patientDetails.Age = ((int)(age.TotalDays / 365)).ToString() + " Years";
+                    patientDetails.Name = $"{prefix} {familyName} {givenName}";
+                    patientDetails.NHS = "Unknown";
+                    if (patient.BirthDate != null)
+                    {
+                        patientDetails.BornDetail = patientDetails.GetBornDetails(patient.BirthDate);
+                    }
                 }
             }
             catch (Exception ex)
